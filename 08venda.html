@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registrar venda</title>
+<link rel="stylesheet" type="text/css" href="08style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Font Awesome for icons -->
+<script src="08script.js"></script>
+<style>
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #4caf50;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 999; 
+}
+.navbar-brand {
+    font-size: 24px;
+    color: #fff;
+}
+.navbar-menu {
+    display: flex;
+    align-items: center;
+}
+.navbar-menu-item {
+    margin-right: 20px;
+    font-size: 20px;
+    color: #fff;
+    text-decoration: none; 
+    display: inline-flex; 
+    align-items: center;
+}
+.navbar-menu-item:hover {
+    transform: scale(1.1); 
+    text-decoration: none; 
+    cursor: pointer; 
+}
+.navbar-menu-item:last-child {
+    margin-right: 0;
+}
+.navbar-menu-item i {
+    margin-right: 5px;
+}
+.navbar-menu {
+    display: flex;
+    align-items: center;
+}
+.navbar-menu-item {
+    font-size: 20px;
+    color: #fff;
+    margin-left: 15px;
+}
+.navbar-menu-item i {
+    margin-right: 5px;
+}
+.navbar-menu-item.login {
+    margin-left: auto;
+    padding-left: 20px;
+    margin-right: 40px;
+    border-left: 1px solid #fff; 
+}
+</style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand"><i class="fas fa-store-alt"></i></div>
+        <div class="navbar-menu">
+            <a class="navbar-menu-item" href="03estoque.html"><i class="fas fa-box-open"></i> Estoque</a>
+            <a class="navbar-menu-item" href="01cadastro.html"><i class="fas fa-plus"></i> Cadastrar</a>
+            <a class="navbar-menu-item" href="02entradasaida.html"><i class="fas fa-exchange-alt"></i> Entradas e Saídas</a>
+            <a class="navbar-menu-item" href="04ponto.html"><i class="fas fa-clock"></i> Registrar Ponto</a>
+            <a class="navbar-menu-item" href="00relatorios.html"><i class="fas fa-chart-bar"></i> Relatórios</a>
+            <a class="navbar-menu-item" href="08venda.html"><i class="fas fa-cash-register"></i> Registrar Venda</a>
+            <a class="navbar-menu-item" href="senha.html"><i class="fas fa-users"></i> Gerenciar Funcionários</a> <!-- Nova opção -->
+            <a class="navbar-menu-item login" href="05cadastro.html"><i class="fas fa-sign-in-alt"></i> Cadastre-se</a>
+        </div>
+    </div>
+    <div class="container">
+        <h2>Registro de Vendas</h2>
+
+        <div class="input-wrapper">
+            <label for="nomeProduto">Nome do Produto:</label>
+            <input type="text" id="nomeProduto">
+        </div>
+
+        <div class="input-wrapper">
+            <label for="idFuncionario">Código do funcionário:</label>
+            <input type="text" id="idFuncionario">
+        </div>
+
+        <div class="input-wrapper">
+            <label for="quantidade">Quantidade:</label>
+            <input type="number" id="quantidade">
+        </div>
+
+        <button id="registrarBtn">Registrar</button>
+
+        <div id="mensagem"></div>
+    </div>
+</body>
+</html>
