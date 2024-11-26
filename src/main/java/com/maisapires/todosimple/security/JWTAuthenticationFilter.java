@@ -1,6 +1,5 @@
 package com.maisapires.todosimple.security;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -16,46 +15,39 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.maisapires.todosimple.exceptions.GlobalExceptionHandler;
 import com.maisapires.todosimple.models.User;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private AuthenticationManager authenticationManager;
-
     private JWTUtil jwtUtil;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
-        setAuthenticationFailureHandler(new GlobalExceptionHandler());
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request,
-            HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException {
         try {
             User userCredentials = new ObjectMapper().readValue(request.getInputStream(), User.class);
 
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                     userCredentials.getUsername(), userCredentials.getPassword(), new ArrayList<>());
 
-            Authentication authentication = this.authenticationManager.authenticate(authToken);
-            return authentication;
+            return authenticationManager.authenticate(authToken);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request,
-            HttpServletResponse response, FilterChain filterChain, Authentication authentication)
-            throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+            FilterChain filterChain, Authentication authentication) throws IOException, ServletException {
         UserSpringSecurity userSpringSecurity = (UserSpringSecurity) authentication.getPrincipal();
-        String username = userSpringSecurity.getUsername();
-        String token = this.jwtUtil.generateToken(username);
+        String token = jwtUtil.generateToken(userSpringSecurity.getUsername());
         response.addHeader("Authorization", "Bearer " + token);
         response.addHeader("access-control-expose-headers", "Authorization");
     }
-
 }

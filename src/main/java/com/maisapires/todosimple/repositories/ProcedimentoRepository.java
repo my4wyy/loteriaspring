@@ -4,12 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.maisapires.todosimple.models.Product;
+import com.maisapires.todosimple.models.Procedimento;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProcedimentoRepository extends JpaRepository<Procedimento, Long> {
 
     @Transactional(readOnly = true)
-    Product findByName(String name);
+    Procedimento findByNomeProcedimento(String nomeProcedimento);
 
 }

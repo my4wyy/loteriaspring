@@ -1,19 +1,21 @@
 package com.maisapires.todosimple.models;
 
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity
-public class Senha {
-
+public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String senha;
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    private User user;
 
     public Long getId() {
         return id;
@@ -23,12 +25,11 @@ public class Senha {
         this.id = id;
     }
 
-    public String getSenha() {
-        return senha;
+    public User getUser() {
+        return user;
     }
 
-    public void setSenha(String senha) {
-        this.senha = senha;
+    public void setUser(User user) {
+        this.user = user;
     }
-
 }

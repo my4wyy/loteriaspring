@@ -22,17 +22,12 @@ public class JWTUtil {
     private Long expiration;
 
     public String generateToken(String username) {
-        SecretKey key = getKeyBySecret();
+        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
         return Jwts.builder()
                 .setSubject(username)
-                .setExpiration(new Date(System.currentTimeMillis() + this.expiration))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key)
                 .compact();
-    }
-
-    private SecretKey getKeyBySecret() {
-        SecretKey key = Keys.hmacShaKeyFor(this.secret.getBytes());
-        return key;
     }
 
     public boolean isValidToken(String token) {
@@ -41,26 +36,22 @@ public class JWTUtil {
             String username = claims.getSubject();
             Date expirationDate = claims.getExpiration();
             Date now = new Date(System.currentTimeMillis());
-            if (Objects.nonNull(username) && Objects.nonNull(expirationDate) && now.before(expirationDate))
-                return true;
+            return Objects.nonNull(username) && Objects.nonNull(expirationDate) && now.before(expirationDate);
         }
         return false;
     }
 
     public String getUsername(String token) {
         Claims claims = getClaims(token);
-        if (Objects.nonNull(claims))
-            return claims.getSubject();
-        return null;
+        return claims != null ? claims.getSubject() : null;
     }
 
     private Claims getClaims(String token) {
-        SecretKey key = getKeyBySecret();
+        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
         } catch (Exception e) {
             return null;
         }
     }
-
 }

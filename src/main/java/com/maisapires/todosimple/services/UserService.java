@@ -1,96 +1,103 @@
 package com.maisapires.todosimple.services;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.validation.Valid;
-
+import com.maisapires.todosimple.models.User;
+import com.maisapires.todosimple.models.UserProfile;
+import com.maisapires.todosimple.repositories.UserProfileRepository;
+import com.maisapires.todosimple.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.maisapires.todosimple.repositories.UserRepository;
-import com.maisapires.todosimple.security.UserSpringSecurity;
-import com.maisapires.todosimple.services.exceptions.AuthorizationException;
-import com.maisapires.todosimple.services.exceptions.DataBindingViolationException;
-import com.maisapires.todosimple.services.exceptions.ObjectNotFoundException;
-import com.maisapires.todosimple.models.User;
-import com.maisapires.todosimple.models.dto.UserCreateDTO;
-import com.maisapires.todosimple.models.dto.UserUpdateDTO;
-import com.maisapires.todosimple.models.enums.ProfileEnum;
+import java.util.Optional;
+import java.util.List;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private UserProfileRepository userProfileRepository;
 
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
+    public User save(User user) {
+        if (userRepository.findByUsername(user.getUsername()) != null) {
+            throw new RuntimeException("User already exists");
+        }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        return user;
+    }
+
+    public void updatePassword(Long userId, String newPassword) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+        } else {
+            throw new UsernameNotFoundException("User not found");
+        }
+    }
+
+    public void deleteUser(Long userId) {
+        UserProfile userProfile = userProfileRepository.findByUserId(userId);
+        
+        if (userProfile != null) {
+            userProfileRepository.delete(userProfile);
+        }
+
+        userRepository.deleteById(userId);
+    }
+
+    public void register(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        User savedUser = userRepository.save(user);
+        UserProfile profile = new UserProfile();
+        profile.setUser(savedUser);
+        userProfileRepository.save(profile);
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
     public User findById(Long id) {
-       /*  UserSpringSecurity userSpringSecurity = authenticated();
-        if (!Objects.nonNull(userSpringSecurity)
-                || !userSpringSecurity.hasRole(ProfileEnum.ADMIN) && !id.equals(userSpringSecurity.getId()))
-            throw new AuthorizationException("Acesso negado!");
-*/
-        Optional<User> user = this.userRepository.findById(id);
-        return user.orElseThrow(() -> new ObjectNotFoundException(
-                "Usuário não encontrado! Id: " + id + ", Tipo: " + User.class.getName()));
+        Optional<User> userOptional = userRepository.findById(id);
+        return userOptional.orElse(null); // Retorna null se não encontrar
     }
-
-    @Transactional
-    public User create(User obj) {
-        obj.setId(null);
-        obj.setPassword(this.bCryptPasswordEncoder.encode(obj.getPassword()));
-        obj.setProfiles(Stream.of(ProfileEnum.USER.getCode()).collect(Collectors.toSet()));
-        obj = this.userRepository.save(obj);
-        return obj;
-    }
-
-    @Transactional
-    public User update(User obj) {
-        User newObj = findById(obj.getId());
-        newObj.setPassword(obj.getPassword());
-        newObj.setPassword(this.bCryptPasswordEncoder.encode(obj.getPassword()));
-        return this.userRepository.save(newObj);
-    }
-
-    public void delete(Long id) {
-        findById(id);
-        try {
-            this.userRepository.deleteById(id);
-        } catch (Exception e) {
-            throw new DataBindingViolationException("Não é possível excluir pois há entidades relacionadas!");
+    public User updateUser(Long id, User user) {
+        Optional<User> existingUserOptional = userRepository.findById(id);
+        if (!existingUserOptional.isPresent()) {
+            throw new RuntimeException("Usuário não encontrado");
         }
+    
+        User existingUser = existingUserOptional.get();
+        existingUser.setUsername(user.getUsername());
+        existingUser.setRole(user.getRole());
+        existingUser.setPassword(user.getPassword()); // Atualize a senha conforme necessário
+    
+        return userRepository.save(existingUser);
     }
-
-    public static UserSpringSecurity authenticated() {
-        try {
-            return (UserSpringSecurity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public User fromDTO(@Valid UserCreateDTO obj) {
-        User user = new User();
-        user.setUsername(obj.getUsername());
-        user.setPassword(obj.getPassword());
-        return user;
-    }
-
-    public User fromDTO(@Valid UserUpdateDTO obj) {
-        User user = new User();
-        user.setId(obj.getId());
-        user.setPassword(obj.getPassword());
-        return user;
-    }
-
+    
 }

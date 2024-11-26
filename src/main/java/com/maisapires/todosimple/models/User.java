@@ -1,70 +1,26 @@
 package com.maisapires.todosimple.models;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import com.maisapires.todosimple.models.enums.ProfileEnum; 
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = User.TABLE_NAME)
-@AllArgsConstructor
-@NoArgsConstructor
-/*@Data*/ 
-public class User {
-
-    public static final String TABLE_NAME = "user";
-
+public class User implements UserDetails {
     @Id
-    @Column(name = "id", unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", length = 100, nullable = false, unique = true)
-    @Size(min = 2, max = 100)
-    @NotBlank
+    @Column(unique = true)
     private String username;
 
-    @Column(name = "password", length = 60, nullable = false)
-    @JsonProperty(access = Access.WRITE_ONLY)
-    @Size(min = 8, max = 60)
-    @NotBlank
+    @Column
     private String password;
 
-    @OneToMany(mappedBy = "user")
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private List<Task> tasks = new ArrayList<Task>();
-
-    @Column(name = "profile", nullable = false)
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "user_profile")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Set<Integer> profiles = new HashSet<>();
-
-    public static String getTableName() {
-        return TABLE_NAME;
-    }
+    @Column
+    private String role;
 
     public Long getId() {
         return id;
@@ -90,28 +46,36 @@ public class User {
         this.password = password;
     }
 
-    public List<Task> getTasks() {
-        return tasks;
+    public String getRole() {
+        return role;
     }
 
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
+    public void setRole(String role) {
+        this.role = role;
     }
 
-    public Set<Integer> getProfiles() {
-        return profiles;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(() -> role);
     }
 
-    public void setProfiles(Set<Integer> profiles) {
-        this.profiles = profiles;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    /* public Set<ProfileEnum> getProfiles() {
-        return this.profiles.stream().map(x -> ProfileEnum.toEnum(x)).collect(Collectors.toSet());
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
     }
 
-    public void addProfile(ProfileEnum profileEnum) {
-        this.profiles.add(profileEnum.getCode());
-    } */
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

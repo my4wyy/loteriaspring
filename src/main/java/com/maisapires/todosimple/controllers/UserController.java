@@ -1,62 +1,60 @@
 package com.maisapires.todosimple.controllers;
 
-import java.net.URI;
-
-import javax.validation.Valid;
-
+import com.maisapires.todosimple.models.User;
+import com.maisapires.todosimple.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.bind.annotation.*;
 
-import com.maisapires.todosimple.models.User;
-import com.maisapires.todosimple.models.dto.UserCreateDTO;
-import com.maisapires.todosimple.models.dto.UserUpdateDTO;
-import com.maisapires.todosimple.services.UserService;
+import java.util.Collections;
+import java.util.List;
 
 @RestController
-@RequestMapping("/user")
-@Validated
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody User user) {
+        try {
+            userService.register(user);
+            return ResponseEntity.ok("Usuário registrado com sucesso.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) {
-        User obj = this.userService.findById(id);
-        return ResponseEntity.ok().body(obj);
-    }
-
-    @PostMapping
-    public ResponseEntity<Void> create(@Valid @RequestBody UserCreateDTO obj) {
-        User user = this.userService.fromDTO(obj);
-        User newUser = this.userService.create(user);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}").buildAndExpand(newUser.getId()).toUri();
-        return ResponseEntity.created(uri).build();
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@Valid @RequestBody UserUpdateDTO obj, @PathVariable Long id) {
-        obj.setId(id);
-        User user = this.userService.fromDTO(obj);
-        this.userService.update(user);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = userService.findById(id); // Adicionei o método findById no serviço
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(user);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        this.userService.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok(Collections.singletonMap("message", "Usuário deletado com sucesso."));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody User user) {
+        try {
+            User updatedUser = userService.updateUser(id, user); // Método para atualizar no serviço
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body("Erro ao atualizar usuário: " + e.getMessage());
+        }
     }
 
 }

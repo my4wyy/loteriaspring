@@ -11,27 +11,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ProductCreateDTO {
+public class ProcedimentoCreateDTO {
 
     public Long id;
 
     @NotBlank
     @Size(min = 2, max = 100)
-    private String name;
+    private String nomeProcedimento;
 
     @NotNull
-    private Double price;
+    private Integer duracaoHoras;
 
-    @NotBlank
-    private String code;
+    @NotNull
+    private Integer duracaoMinutos;
 
-    @NotBlank
-    private String type;
+    @NotNull
+    private Double preco;
 
-    @NotBlank
-    private String employeeWhoRegistered;
-
-    private String additionalDetails;
-
-    private Integer quantidade; 
+    private String materiaisNecessarios;
 }
