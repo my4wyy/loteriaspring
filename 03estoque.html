@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Produtos</title>
+<link rel="stylesheet" type="text/css" href="03style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> 
+<style>
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #4caf50;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 999; 
+}
+
+.navbar-brand {
+    font-size: 24px;
+    color: #fff;
+}
+
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    
+}
+
+.navbar-menu-item {
+    margin-right: 20px;
+    font-size: 20px;
+    color: #fff;
+    text-decoration: none; 
+    display: inline-flex; 
+    align-items: center;
+}
+
+.navbar-menu-item:hover {
+    transform: scale(1.1); 
+    text-decoration: none; 
+    cursor: pointer; 
+}
+
+
+.navbar-menu-item:last-child {
+    margin-right: 5;
+}
+
+.navbar-menu-item i {
+    margin-right: 5px;
+}
+
+.navbar-menu-item.search-box {
+    margin-right: auto;
+}
+
+.navbar-menu-item.login {
+    margin-left: 20px;
+    border-left: 1px solid #fff; 
+}
+.busca {
+        padding: 10px; /* Aumentei o padding */
+        border-radius: 30px; /* Deixei a borda mais arredondada */
+        border: 1px solid #ccc; /* Adicionei uma borda para destacar a barra de pesquisa */
+        outline: none;
+        width: 400px; /* Aumentei ainda mais a largura da barra de pesquisa */
+    }
+    
+    .buscaBotao {
+        padding: 10px 20px; /* Ajustei o padding */
+        background-color: #4caf50;
+        border: none;
+        border-radius: 30px; /* Deixei a borda mais arredondada */
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s; /* Adicionei uma transição de cor para suavizar a mudança */
+    }
+    
+    .buscaBotao:hover {
+        background-color: #45a049; /* Cor do botão ao passar o mouse */
+    }
+
+
+</style>
+</head>
+<body>
+
+    <div class="navbar">
+        <div class="navbar-brand"><i class="fas fa-store-alt"></i></div>
+        <div class="navbar-menu">
+
+            <div class="navbar-menu-item search-box">
+                <input type="search" class="busca" id="busca" placeholder="Buscar produto...">
+                <button class="buscaBotao" id="buscaBotao"><i class="fas fa-search"></i></button>
+            </div>            
+            
+                    <a class="navbar-menu-item" href="03estoque.html"><i class="fas fa-box-open"></i> Estoque</a>
+                    <a class="navbar-menu-item" href="index.html"><i class="fas fa-plus"></i> Cadastrar</a>
+                    <a class="navbar-menu-item" href="02entradasaida.html"><i class="fas fa-exchange-alt"></i> Entradas e Saídas</a>
+                    <a class="navbar-menu-item" href="04ponto.html"><i class="fas fa-clock"></i> Registrar Ponto</a>
+                    <a class="navbar-menu-item" href="00relatorios.html"><i class="fas fa-chart-bar"></i> Relatórios</a>
+                    <a class="navbar-menu-item" href="08venda.html"><i class="fas fa-cash-register"></i> Registrar Venda</a>
+                    <a class="navbar-menu-item" href="senha.html"><i class="fas fa-users"></i> Gerenciar Funcionários</a> <!-- Nova opção -->
+                    <a class="navbar-menu-item login" href="05cadastro.html"><i class="fas fa-sign-in-alt"></i> Cadastre-se</a>
+        </div>
+            </div>
+
+    <div id="products-container" class="products-container"></div>
+    <div class="form-container"></div>
+    
+    <script src="03script.js"></script>
+    
+    </body>
+</html>

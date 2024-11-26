@@ -1,0 +1,156 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+
+
+table {
+    width: 80%;
+    margin-top: 20px;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 10px;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+th:first-child, td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+th:last-child, td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#relatorios {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+#relatorios th, #relatorios td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+#relatorios th {
+    background-color: #4caf50;
+    color: #ffffff;
+}
+
+#relatorios tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#relatorios tbody tr:hover {
+    background-color: #f2f2f2;
+}
+
+
+#consultarBtn {
+    padding: 10px 20px; 
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4caf50;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#funcionario-container {
+    display: flex;
+    align-items: center;
+}
+
+#funcionario {
+    font-size: 16px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#consultarBtn {
+    font-size: 16px;
+    padding: 10px 20px; 
+    margin-top: 10px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4caf50;
+    color: #fff;
+    cursor: pointer;
+}
+
+#modoConsulta {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.modoButton {
+    font-size: 20px;
+    padding: 10px 20px;
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #4caf50;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 30px;
+}
+
+.modoButton.selected {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+#formConsultaData,
+#formConsultaMesAno {
+    margin-bottom: 20px;
+}
+
+
+
+#consultarBtn {
+    font-size: 16px;
+    padding: 10px 20px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4caf50;
+    color: #fff;
+    cursor: pointer;
+}
+#idFuncionario {
+    width: 200px;
+    border-radius: 10px; 
+    padding: 5px; 
+    margin-bottom: 10px; 
+}
